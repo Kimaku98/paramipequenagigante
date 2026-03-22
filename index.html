@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Girasoles para ti</title>
+
+    <style>
+    /* 1. Fondo del cielo corregido */
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: #87CEEB; /* Color de respaldo */
+        background: linear-gradient(to top, #87CEEB 0%, #E0F6FF 100%);
+        background-attachment: fixed;
+        overflow: hidden; /* Evita el scroll innecesario en móviles */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1 {
+        position: absolute;
+        top: 20px;
+        width: 100%;
+        text-align: center;
+        font-size: clamp(24px, 6vw, 45px);
+        color: #333;
+        text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        z-index: 10;
+    }
+
+    /* 2. Contenedor del jardín */
+    #jardin {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .flor {
+        position: absolute;
+        font-size: clamp(35px, 7vw, 80px);
+        z-index: 2;
+        /* Combinación de animaciones */
+        animation: 
+            crecer 0.8s ease forwards, 
+            viento 3s infinite ease-in-out, 
+            mirarSol 6s infinite ease-in-out;
+    }
+
+    .suelo {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 100px;
+        background: #8B4513; /* Un café más tierra */
+        z-index: 1;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* 3. Animaciones */
+    @keyframes crecer {
+        from { transform: translateY(50px) scale(0); opacity: 0; }
+        to { transform: translateY(0px) scale(1); opacity: 1; }
+    }
+
+    @keyframes viento {
+        0%, 100% { transform: rotate(-3deg); }
+        50% { transform: rotate(3deg); }
+    }
+
+    .sol {
+        position: absolute;
+        top: 40px;
+        right: 30px;
+        font-size: clamp(50px, 12vw, 100px);
+        animation: brillar 4s infinite ease-in-out;
+        z-index: 3;
+    }
+
+    @keyframes brillar {
+        0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px yellow); }
+        50% { transform: scale(1.1); filter: drop-shadow(0 0 25px orange); }
+    }
+
+    .mensaje, .mensaje2 {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        font-size: clamp(18px, 4.5vw, 30px);
+        font-weight: bold;
+        color: #444;
+        opacity: 0;
+        animation: aparecer 3s forwards;
+        animation-delay: 10s;
+        z-index: 10;
+        padding: 0 15px;
+        box-sizing: border-box;
+    }
+
+    .mensaje { top: 110px; }
+    .mensaje2 { top: 160px; }
+
+    @keyframes aparecer {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Nubes */
+    .nube {
+        position: absolute;
+        font-size: clamp(40px, 10vw, 80px);
+        opacity: 0.8;
+        z-index: 1;
+        animation: moverNube 60s linear infinite;
+    }
+    .n1 { top: 10%; left: -150px; }
+    .n2 { top: 25%; left: -250px; animation-duration: 85s; }
+    .n3 { top: 15%; left: -350px; animation-duration: 110s; }
+
+    @keyframes moverNube {
+        from { left: -150px; }
+        to { left: 110vw; }
+    }
+
+    /* Mariposas */
+    .mariposa {
+        position: absolute;
+        font-size: 25px;
+        z-index: 5;
+        opacity: 0;
+        animation: aparecer 2s forwards, volar 12s linear infinite;
+        animation-delay: 7s;
+    }
+    .m1 { top: 30%; animation-delay: 7s, 7s; }
+    .m2 { top: 45%; animation-delay: 7s, 9s; }
+
+    @keyframes volar {
+        0% { left: -50px; transform: translateY(0); }
+        25% { transform: translateY(-30px); }
+        50% { transform: translateY(20px); }
+        75% { transform: translateY(-20px); }
+        100% { left: 110vw; transform: translateY(0); }
+    }
+    </style>
+</head>
+<body>
+
+<h1>Esto es para tú.</h1>
+
+<div class="sol">☀️</div>
+
+<div class="nube n1">☁️</div>
+<div class="nube n2">☁️</div>
+<div class="nube n3">☁️</div>
+
+<div class="mariposa m1">🦋</div>
+<div class="mariposa m2">🦋</div>
+
+<div id="jardin"></div>
+<div class="suelo"></div>
+
+<div class="mensaje">Te dije que no ibas a ser espectadora.</div>
+<div class="mensaje2">Aquí están tus flores y no se marchitarán. ✨</div>
+
+<script>
+    const jardin = document.getElementById("jardin");
+    
+    const filas = 5;
+    const columnas = 12; 
+    
+    for (let f = 0; f < filas; f++) {
+        for (let c = 0; c < columnas; c++) {
+            setTimeout(() => {
+                const flor = document.createElement("div");
+                flor.textContent = "🌻";
+                flor.className = "flor";
+    
+                const x = (c * (100 / columnas)) + (Math.random() * 5);
+                const y = 70 + (f * 5) + (Math.random() * 3);
+    
+                flor.style.left = `${x}%`;
+                flor.style.top = `${y}%`;
+                flor.style.fontSize = `${Math.floor(Math.random() * (70 - 40 + 1)) + 40}px`;
+    
+                jardin.appendChild(flor);
+            }, (f * columnas + c) * 150);
+        }
+    }
+</script>
+</body>
+</html>
